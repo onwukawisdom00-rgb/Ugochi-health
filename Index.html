@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Preventive Health Scorecard | Know Where You Stand</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#2d7d5e;--teal:#4a9d8f;--orange:#e07b54;--cream:#f7f3ee;--dark:#1a2e24;--muted:#5a7060}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;background-image:radial-gradient(circle at 15% 20%,rgba(74,157,143,0.08) 0%,transparent 50%),radial-gradient(circle at 85% 80%,rgba(224,123,84,0.08) 0%,transparent 50%)}
+.screen{display:none}.screen.active{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.header{text-align:center;padding:48px 24px 28px}
+.badge{display:inline-block;background:rgba(74,157,143,0.12);color:var(--green);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:18px;border:1px solid rgba(74,157,143,0.2)}
+.header h1{font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,44px);color:var(--dark);line-height:1.2;margin-bottom:10px}
+.header h1 span{color:var(--green);font-style:italic}
+.header p{color:var(--muted);font-size:15px;max-width:480px;margin:0 auto;line-height:1.65;font-weight:300}
+.prog-wrap{max-width:580px;margin:0 auto 20px;padding:0 24px}
+.prog-track{background:#ddd8d0;height:5px;border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--green));border-radius:100px;transition:width .4s ease;width:0%}
+.prog-meta{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:#8a9e8e;font-weight:500}
+.step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.dot{height:6px;width:28px;border-radius:100px;background:#ddd8d0;transition:background .3s}
+.dot.done{background:var(--teal)}.dot.active{background:var(--green)}
+.card{background:#fff;border-radius:20px;padding:28px;max-width:580px;margin:0 auto 20px;box-shadow:0 2px 20px rgba(26,46,36,0.06);border:1px solid rgba(26,46,36,0.08)}
+.sec-hdr{display:flex;align-items:flex-start;gap:12px;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid #f0ebe4}
+.sec-icon{font-size:20px;width:42px;height:42px;background:var(--cream);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-sub{font-size:11px;color:#8a9e8e;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.sec-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--dark);font-weight:700;line-height:1.3}
+.sec-desc{font-size:12px;color:#8a9e8e;margin-top:2px;font-style:italic}
+.question{margin-bottom:22px}.question:last-child{margin-bottom:0}
+.q-num{font-size:11px;color:#bbb;font-weight:600;margin-bottom:4px}
+.q-text{font-size:13.5px;color:#2a3e30;margin-bottom:10px;font-weight:500;line-height:1.5}
+.options{display:flex;flex-direction:column;gap:7px}
+.opt{padding:10px 14px;border-radius:10px;border:1.5px solid #e8e2da;background:#faf8f5;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;transition:all .18s;text-align:left;width:100%}
+.opt:hover{border-color:var(--teal);background:rgba(74,157,143,0.06);color:var(--green)}
+.opt.selected{border-color:var(--teal);background:rgba(74,157,143,0.13);color:#1a5e44;font-weight:600}
+.nav{display:flex;justify-content:space-between;align-items:center;max-width:580px;margin:0 auto;padding:0 24px 48px}
+.btn{padding:13px 26px;border-radius:12px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--green);color:#fff}.btn-primary:hover{background:#1a5e44;transform:translateY(-1px)}
+.btn-primary:disabled{background:#c5d8cd;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid #ddd8d0}.btn-ghost:hover{background:#f0ebe4}
+.center-wrap{max-width:560px;margin:0 auto;padding:48px 24px}
+.card-center{text-align:center;padding:16px 0}
+.big-icon{font-size:48px;margin-bottom:14px}
+.card-center h2{font-family:'Playfair Display',serif;font-size:24px;color:var(--dark);margin-bottom:8px}
+.card-center p{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:22px;font-weight:300}
+.inp{padding:13px 15px;border-radius:12px;border:1.5px solid #e8e2da;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);background:#faf8f5;outline:none;transition:border-color .2s;width:100%;margin-bottom:10px}
+.inp:focus{border-color:var(--teal)}
+.privacy{font-size:12px;color:#8a9e8e;margin-top:10px}
+.result-score-lbl{font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.bar-wrap{background:#f0ebe4;border-radius:100px;height:10px;margin:14px 0 22px;overflow:hidden}
+.bar-fill{height:100%;border-radius:100px;transition:width 1.2s ease}
+.result-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--dark);margin-bottom:14px;line-height:1.3}
+.result-msg{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:22px;font-weight:300}
+.divider{height:1px;background:#f0ebe4;margin:18px 0}
+.admin-wrap{max-width:720px;margin:0 auto;padding:24px}
+.admin-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.admin-top h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--dark)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.stat{background:#fff;border-radius:14px;padding:18px;text-align:center;border:1px solid rgba(26,46,36,0.08)}
+.stat-n{font-family:'Playfair Display',serif;font-size:30px;color:var(--green)}
+.stat-l{font-size:11px;color:#8a9e8e;font-weight:500;margin-top:4px}
+.sub-list{background:#fff;border-radius:16px;overflow:hidden;border:1px solid rgba(26,46,36,0.08);margin-bottom:20px}
+.sub-item{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid #f7f3ee;font-size:13px;flex-wrap:wrap;gap:8px}
+.sub-item:last-child{border-bottom:none}
+.sub-name{font-weight:500;color:var(--dark)}.sub-email{color:var(--muted);font-size:12px;margin-top:2px}
+.tbadge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px}
+.nl-box,.setup-box{background:#fff;border-radius:16px;padding:22px;border:1px solid rgba(26,46,36,0.08);margin-bottom:20px}
+.nl-box h3,.setup-box h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--dark);margin-bottom:14px}
+.nl-out{background:#f7f3ee;border-radius:12px;padding:16px;font-size:13px;color:#2a3e30;line-height:1.7;min-height:80px;white-space:pre-wrap;margin-top:14px;border:1px solid #e8e2da}
+.copy-btn{font-size:12px;padding:6px 14px;background:#f0ebe4;border:none;border-radius:8px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px}
+.empty{text-align:center;padding:36px;color:#8a9e8e;font-size:14px}
+select.inp{appearance:none}
+.admin-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:10px;border:1.5px solid #e8e2da;background:#fff;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;font-weight:500}
+.tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.step-guide{counter-reset:step;list-style:none;padding:0}
+.step-guide li{counter-increment:step;display:flex;gap:12px;margin-bottom:14px;font-size:13px;color:var(--muted);line-height:1.6}
+.step-guide li::before{content:counter(step);background:var(--green);color:#fff;font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.err{color:#e07b54;font-size:13px;margin-bottom:10px;display:none}
+.saving{font-size:12px;color:var(--teal);margin-top:6px;display:none}
+.loading::after{content:'...';animation:dots 1.2s infinite}
+@keyframes dots{0%,20%{content:'.'}40%{content:'..'}60%,100%{content:'...'}}
+footer{text-align:center;padding:24px;font-size:12px;color:#aaa}
+.admin-link{text-align:center;padding-bottom:24px}
+.admin-link button{background:none;border:none;font-size:12px;color:#ccc;cursor:pointer;font-family:'DM Sans',sans-serif}
+.highlight-box{background:rgba(74,157,143,0.08);border:1px solid rgba(74,157,143,0.2);border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;color:var(--dark);line-height:1.7}
+.highlight-box strong{color:var(--green)}
+@media(max-width:480px){.card{margin:0 12px 16px;padding:20px 16px}.nav{padding:0 12px 40px}.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- QUIZ -->
+<div id="screen-quiz" class="screen active">
+  <div class="header">
+    <div class="badge">Free · 5 Minutes · Personalised Result</div>
+    <h1>Your Body Has Been<br/>Sending You <span>Signals.</span><br/>Are You Listening?</h1>
+    <p>Answer these 33 honest questions and find out exactly where your health habits are helping you — and where they are quietly putting you at risk.</p>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-meta"><span id="prog-sec">Section 1 of 6</span><span id="prog-cnt">0 / 33 answered</span></div>
+  </div>
+  <div class="step-dots" id="step-dots"></div>
+  <div style="max-width:580px;margin:0 auto;padding:0 24px">
+    <div class="card" style="margin:0 0 20px" id="sec-card"></div>
+  </div>
+  <div class="nav">
+    <button class="btn btn-ghost" id="btn-back" onclick="goBack()">← Back</button>
+    <button class="btn btn-primary" id="btn-next" onclick="goNext()" disabled>Next Section →</button>
+  </div>
+  <div class="admin-link"><button onclick="showScreen('admin-login')">Admin Access</button></div>
+</div>
+
+<!-- GATE -->
+<div id="screen-gate" class="screen">
+  <div class="center-wrap">
+    <div class="card"><div class="card-center">
+      <div class="big-icon">🎯</div>
+      <h2>Your results are ready!</h2>
+      <p>Enter your name and email to unlock your score and get free weekly health tips.</p>
+      <input class="inp" type="text" id="inp-name" placeholder="Your first name" oninput="checkGate()"/>
+      <input class="inp" type="email" id="inp-email" placeholder="Your email address" oninput="checkGate()"/>
+      <button class="btn btn-primary" id="btn-submit" style="width:100%;margin-top:4px" onclick="submitGate()" disabled>Show My Results →</button>
+      <div class="privacy">🔒 No spam. No sharing. Just helpful health content.</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="screen-result" class="screen">
+  <div class="center-wrap">
+    <div class="card"><div class="card-center">
+      <div class="big-icon" id="r-emoji"></div>
+      <div class="result-score-lbl" id="r-lbl"></div>
+      <div class="bar-wrap"><div class="bar-fill" id="r-bar"></div></div>
+      <div class="result-title" id="r-title"></div>
+      <div class="result-msg" id="r-msg"></div>
+      <div class="divider"></div>
+      <p style="font-size:13px;color:#8a9e8e;margin-bottom:18px" id="r-note"></p>
+      <button class="btn btn-ghost" style="width:100%" onclick="retake()">Retake the Scorecard</button>
+    </div></div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="screen-admin-login" class="screen">
+  <div class="center-wrap" style="max-width:440px">
+    <div class="card"><div class="card-center">
+      <div class="big-icon">🔐</div>
+      <h2>Admin Access</h2>
+      <p>Enter your password to access the dashboard.</p>
+      <input class="inp" type="password" id="admin-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter')adminLogin()"/>
+      <div class="err" id="admin-err">Incorrect password. Try again.</div>
+      <button class="btn btn-primary" id="btn-admin-login" style="width:100%;margin-top:4px" onclick="adminLogin()">Sign In</button>
+      <div style="margin-top:12px"><button class="btn btn-ghost" style="width:100%;font-size:13px" onclick="showScreen('quiz')">← Back</button></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="screen-admin" class="screen">
+  <div class="admin-wrap">
+    <div class="admin-top">
+      <div>
+        <h2>📊 Admin Dashboard</h2>
+        <p style="font-size:13px;color:#8a9e8e;margin-top:4px">Welcome, <span id="admin-name-display" style="font-weight:600;color:var(--green)"></span></p>
+      </div>
+      <button class="btn btn-ghost" style="font-size:13px" onclick="showScreen('quiz')">← Back</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-n" id="stat-total">0</div><div class="stat-l">Total Subscribers</div></div>
+      <div class="stat"><div class="stat-n" style="color:#e07b54" id="stat-low">0</div><div class="stat-l">🌱 Need Attention</div></div>
+      <div class="stat"><div class="stat-n" style="color:#2d7d5e" id="stat-high">0</div><div class="stat-l">🌟 Champions</div></div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="tab active" onclick="switchTab('subscribers',this)">👥 Subscribers</button>
+      <button class="tab" onclick="switchTab('newsletter',this)">✉️ Newsletter</button>
+      <button class="tab" onclick="switchTab('setup',this)">⚙️ Setup</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-subscribers">
+      <div class="sub-list" id="sub-list"><div class="empty">Loading subscribers...</div></div>
+    </div>
+
+    <div class="tab-panel" id="tab-newsletter">
+      <div class="nl-box">
+        <h3>✉️ AI Newsletter Generator</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;font-weight:300">Add your Anthropic key in Setup tab first. Then enter a topic and generate.</p>
+        <input class="inp" type="text" id="nl-topic" placeholder="Topic e.g. why ignoring symptoms is dangerous"/>
+        <select class="inp" id="nl-tier">
+          <option value="all">All Subscribers</option>
+          <option value="low">🌱 Starters (33–55)</option>
+          <option value="mid">🌤️ Building (56–77)</option>
+          <option value="high">🌟 Champions (78–99)</option>
+        </select>
+        <button class="btn btn-primary" id="btn-generate" onclick="generateNL()">Generate Newsletter ✨</button>
+        <div class="nl-out" id="nl-out" style="display:none"></div>
+        <button class="copy-btn" id="btn-copy" style="display:none" onclick="copyNL()">📋 Copy to clipboard</button>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-setup">
+
+      <!-- JSONBIN SETUP -->
+      <div class="setup-box">
+        <h3>🗄️ Step 1 — Set Up Your Database (JSONBin)</h3>
+        <div class="highlight-box">
+          This stores all your subscribers online so both you and Ugochi can see them from any phone or device.
+        </div>
+        <ol class="step-guide">
+          <li>Go to <strong>jsonbin.io</strong> on your phone → Sign up free</li>
+          <li>Once inside click <strong>CREATE BIN</strong></li>
+          <li>Paste this inside the bin: <strong>[]</strong> (just empty square brackets) → click Create</li>
+          <li>Copy the <strong>BIN ID</strong> shown in the URL (looks like 64abc123...)</li>
+          <li>Go to <strong>API Keys</strong> in the menu → copy your Master Key</li>
+          <li>Paste both below and click Save ✅</li>
+        </ol>
+        <label style="font-size:13px;font-weight:500;color:var(--dark);display:block;margin-bottom:6px">JSONBin Master Key</label>
+        <input class="inp" type="password" id="jb-key" placeholder="$2a$10$..."/>
+        <label style="font-size:13px;font-weight:500;color:var(--dark);display:block;margin-bottom:6px;margin-top:8px">JSONBin Bin ID</label>
+        <input class="inp" type="text" id="jb-bin" placeholder="64abc123def456..."/>
+        <button class="btn btn-primary" style="margin-top:8px" onclick="saveJSONBin()">Save Database Config</button>
+        <div class="saving" id="jb-saved">✅ Saved!</div>
+      </div>
+
+      <!-- ANTHROPIC KEY -->
+      <div class="setup-box">
+        <h3>🤖 Step 2 — Anthropic API Key (for Newsletter AI)</h3>
+        <ol class="step-guide">
+          <li>Go to <strong>console.anthropic.com</strong> → Sign up</li>
+          <li>Click <strong>API Keys → Create Key</strong> → Copy it</li>
+          <li>Paste below and save ✅</li>
+        </ol>
+        <input class="inp" type="password" id="ant-key" placeholder="sk-ant-..."/>
+        <button class="btn btn-primary" style="margin-top:8px" onclick="saveAnthropic()">Save Anthropic Key</button>
+        <div class="saving" id="ant-saved">✅ Saved!</div>
+      </div>
+
+      <!-- BREVO -->
+      <div class="setup-box">
+        <h3>📬 Step 3 — Brevo (for Sending Emails)</h3>
+        <ol class="step-guide">
+          <li>Go to <strong>brevo.com</strong> → Sign up free</li>
+          <li>Create 3 lists: <strong>Starters, Building, Champions</strong></li>
+          <li>Copy each list ID from the URL</li>
+          <li>Go to <strong>Settings → API Keys</strong> → Copy your key</li>
+          <li>Paste below and save ✅</li>
+        </ol>
+        <label style="font-size:13px;font-weight:500;color:var(--dark);display:block;margin-bottom:6px">Brevo API Key</label>
+        <input class="inp" type="password" id="brevo-key" placeholder="xkeysib-..."/>
+        <label style="font-size:13px;font-weight:500;color:var(--dark);display:block;margin-bottom:6px;margin-top:8px">Brevo List IDs (Starter, Building, Champion)</label>
+        <input class="inp" type="text" id="brevo-lists" placeholder="3, 4, 5"/>
+        <button class="btn btn-primary" style="margin-top:8px" onclick="saveBrevo()">Save Brevo Config</button>
+        <div class="saving" id="brevo-saved">✅ Saved!</div>
+      </div>
+
+    </div>
+  </div>
+  <div style="text-align:center;padding-bottom:24px">
+    <button style="background:none;border:none;font-size:12px;color:#ccc;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="showScreen('quiz')">← Back to scorecard</button>
+  </div>
+</div>
+
+<footer>© 2025 Preventive Health Scorecard · Built with care</footer>
+
+<script>
+// ── DATA ──
+const SECTIONS=[{title:"The Little Things You Do Daily",sub:"Section 1 of 6",desc:"Habits people ignore",icon:"🌿",questions:[{text:"When you feel a small discomfort what do you usually tell yourself?",opts:["It is nothing it will go","Let me just manage it","I should pay attention to this"]},{text:"How often do you take medication without fully knowing what it is for?",opts:["Very often","Sometimes","Rarely"]},{text:"When you start feeling better after taking drugs what do you do?",opts:["I stop immediately","I forget some doses","I complete it"]},{text:"How often do you ignore symptoms because you are too busy?",opts:["Very often","Sometimes","Rarely"]},{text:"Have you ever delayed going to the hospital hoping the issue would resolve itself?",opts:["Many times","A few times","Not really"]},{text:"How often do you assume your body will fix itself?",opts:["Always","Sometimes","Rarely"]}]},{title:"What You Know And What You Ignore",sub:"Section 2 of 6",desc:"Awareness gaps",icon:"💡",questions:[{text:"Do you actually know what your body feels like when it is fully okay?",opts:["Not really","Sometimes","Yes"]},{text:"Do you know your last blood pressure reading or basic health info?",opts:["No idea","I have checked before","Yes I know it"]},{text:"How often do you learn about your health intentionally not just when sick?",opts:["Never","Occasionally","Regularly"]},{text:"When you see health advice online what do you do?",opts:["Ignore it","Read but do not apply","Try to apply it"]},{text:"Do you believe small symptoms can become serious if ignored?",opts:["Not really","Sometimes","Yes"]},{text:"How often do you think about pre
